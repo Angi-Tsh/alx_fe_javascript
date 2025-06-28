@@ -11,13 +11,14 @@ const newQuoteBtn = document.getElementById('newQuote');
 const newQuoteTextInput = document.getElementById('newQuoteText');
 const newQuoteCategoryInput = document.getElementById('newQuoteCategory');
 const addQuoteBtn = document.getElementById('addQuoteButton');
-const allQuotesList = document.getElementById('allQuotesList'); // Get the new list container
+const allQuotesList = document.getElementById('allQuotesList'); // Get the list container for all quotes
 
-//Displays a random quote from the 'quotes' array.
-  // This function now uses `document.createElement` and `element.appendChild`.
-
+/**
+ * Displays a random quote from the 'quotes' array.
+ * This function uses `document.createElement` and `element.appendChild`.
+ */
 function showRandomQuote() {
-    // Using innerHTML = '' is an efficient way to clear all children before appending new ones.
+    // Clear previous content of quoteDisplay to avoid duplicate quotes
     quoteDisplay.innerHTML = '';
 
     if (quotes.length === 0) {
@@ -26,12 +27,12 @@ function showRandomQuote() {
         quoteDisplay.appendChild(noQuotesMessage); // Append the <p> to the display div
         return;
     }
- //generate random integer that can generate random indices from an array
+
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
 
     // Create the paragraph element for the quote text
-    const quoteTextP = document.createElement('p'); // Demonstrates createElement
+    const quoteTextP = document.createElement('p');
     quoteTextP.classList.add('quote-text'); // Add a class for styling
     quoteTextP.textContent = `"${randomQuote.text}"`;
 
@@ -41,15 +42,15 @@ function showRandomQuote() {
     quoteCategoryP.textContent = `- ${randomQuote.category}`;
 
     // Append these newly created elements to the quoteDisplay div
-    quoteDisplay.appendChild(quoteTextP); 
+    quoteDisplay.appendChild(quoteTextP);
     quoteDisplay.appendChild(quoteCategoryP);
 }
 
 /**
- * Adds a new quote to the 'quotes' array based on user input,
+ * Adds a new quote to the 'quotes' array from user input,
  * and updates the 'All Quotes Added' list using dynamic DOM manipulation.
  */
-function addQuote() { 
+function addQuote() { // This function handles adding the quote
     const enteredQuoteText = newQuoteTextInput.value.trim();
     const enteredQuoteCategory = newQuoteCategoryInput.value.trim();
 
@@ -104,7 +105,7 @@ function updateAllQuotesList() {
 
 // Event Listeners
 newQuoteBtn.addEventListener('click', showRandomQuote);
-addQuoteBtn.addEventListener('click', addQuote); // Attach to the renamed function `addQuote`
+addQuoteBtn.addEventListener('click', addQuote); // The button now directly calls the `addQuote` function
 
 // Initial setup when the page loads
 document.addEventListener('DOMContentLoaded', () => {
