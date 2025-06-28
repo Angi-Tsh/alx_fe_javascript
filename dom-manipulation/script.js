@@ -15,7 +15,7 @@ const allQuotesList = document.getElementById('allQuotesList'); // Get the list 
 
 /**
  * Displays a random quote from the 'quotes' array.
- * This function uses `document.createElement` and `element.appendChild`.
+ * This function uses `document.createElement` and `element.appendChild` for dynamic DOM manipulation.
  */
 function showRandomQuote() {
     // Clear previous content of quoteDisplay to avoid duplicate quotes
@@ -47,10 +47,11 @@ function showRandomQuote() {
 }
 
 /**
- * Adds a new quote to the 'quotes' array from user input,
- * and updates the 'All Quotes Added' list using dynamic DOM manipulation.
+ * Handles the logic for adding a new quote to the 'quotes' array from user input.
+ * This function is named 'createAddQuoteForm' as per the project requirements,
+ * and it also updates the 'All Quotes Added' list.
  */
-function addQuote() { // This function handles adding the quote
+function createAddQuoteForm() {
     const enteredQuoteText = newQuoteTextInput.value.trim();
     const enteredQuoteCategory = newQuoteCategoryInput.value.trim();
 
@@ -96,8 +97,8 @@ function updateAllQuotesList() {
         quoteCategoryP.classList.add('quote-category');
         quoteCategoryP.textContent = `- ${quote.category}`;
 
-        quoteDiv.appendChild(quoteTextP); // Append text to the quote container
-        quoteDiv.appendChild(quoteCategoryP); // Append category to the quote container
+        quoteDiv.appendChild(quoteTextP);
+        quoteDiv.appendChild(quoteCategoryP);
 
         allQuotesList.appendChild(quoteDiv); // Append the complete quote container to the main list
     });
@@ -105,10 +106,6 @@ function updateAllQuotesList() {
 
 // Event Listeners
 newQuoteBtn.addEventListener('click', showRandomQuote);
-addQuoteBtn.addEventListener('click', addQuote); // The button now directly calls the `addQuote` function
+// Link the 'Add Quote' button to the createAddQuoteForm function as specified
+addQuoteBtn.addEventListener('click', createAddQuoteForm);
 
-// Initial setup when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    showRandomQuote(); // Display a random quote initially
-    updateAllQuotesList(); // Populate the "All Quotes Added" list on page load
-});
