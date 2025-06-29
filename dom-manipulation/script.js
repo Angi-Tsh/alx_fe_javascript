@@ -339,7 +339,6 @@ async function syncData() {
         // Calling the newly defined syncQuotes function
         const syncResults = await syncQuotes();
 
-        // UI updates moved here from the old syncData
         populateCategories();
         showRandomQuote();
         filterQuotes();
@@ -349,6 +348,9 @@ async function syncData() {
         if (syncResults.newQuotesFromServer > 0) syncMessage += ` ${syncResults.newQuotesFromServer} new quotes from server.`;
         if (syncResults.quotesPushed > 0) syncMessage += ` ${syncResults.quotesPushed} quotes pushed to server.`;
 
+        if (syncResults.conflictsResolved === 0 && syncResults.newQuotesFromServer === 0 && syncResults.quotesPushed === 0) {
+            syncMessage = "Quotes synced with server!"; 
+            
         updateSyncStatus(syncMessage, 'success');
     } catch (error) {
         console.error("Error during full sync process:", error);
