@@ -14,6 +14,7 @@ const addQuoteBtn = document.getElementById('addQuoteButton');
 const allQuotesList = document.getElementById('allQuotesList'); // Get the list container for all quotes
 const importFileBtn = document.getElementById('importFile'); 
 const exportBtn = document.getElementById('exportBtn');  
+const categoryFilter = document.getElementById('categoryFilter'); //for filtering dropdown
 
 
 /**
@@ -154,4 +155,53 @@ function importFromJsonFile(event) {
   //Event Listeners
   document.getElementById('importFile').addEventListener('change', importFromJsonFile);
   document.getElementById('exportBtn').addEventListener('click', exportToJsonFile);
+
+  //Saves the user's last selected category filter to Local Storage.
+  function saveSelectedFile (){
+    localStorage.setItem ('lastSelectedCategory',categoryFilter.value);
+  }
+  //loads user's last selected category filter from local storage and applies it
+  function loadSelectedFilter (){
+    const lastSelectedCategory = localStorage.getItem ('lastSelectedCategory');
+    if (lastSelectedCategory){
+        //check if the loaded category exists in the dropdown options.
+        const optionExists = Array.from (categoryFilter.options).some(option => option.value === lastSelectedCategory); 
+        if (optionExists) {
+            categoryFilter.value=lastSelectedCategory;
+        } else {
+            //if the category from storage does not exist 
+            categoryFilter.value = 'all'; //default to 'all categories'
+            saveSelectedFile(); //save this new default
+        }
+    }
+  }
+//populate the category filter dropdown from unique categories in the qoutes array
+function populateCategories (){
+    const uniqueCategories = new Set();
+    quotes.forEach(qoute => {
+        if (qoute.category) {
+            uniqueCategories.add(qoute.category.toLowerCase());
+        }
+    });
+//add unique categories to the dropdown
+uniqueCategories.forEach(category =>{
+    const option = document.createElement ('option');
+    option.value=category;
+    option.textContent = category.charAt(0).toUpperCase()+ category.slice (1) //capitalise the first letter 
+    categoryFilter.appendChild(option);
+});
+}
+
+//Filters and updates the displayed quotes based on the selected category.
+function filterQuotes (){
+    const selectedCategory = categoryFilter.value;
+    let filterQuotes = [];
+    if (selectedCategory === 'all'){
+        filterQuotes = quotes;
+    } else {
+        filterQuotes = quotes.filter (quote => quote.category.toLowerCase() === selectedCategory);
+    }
+updateAllQuotesList(filteredQuotes); // Pass filtered quotes to the update function
+saveSelectedFilter(); // Save the newly selected filter to local storage
+}
 
