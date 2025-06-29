@@ -177,14 +177,17 @@ function importFromJsonFile(event) {
   }
 //populate the category filter dropdown from unique categories in the qoutes array
 function populateCategories (){
-    const uniqueCategories = new Set();
-    quotes.forEach(qoute => {
-        if (qoute.category) {
-            uniqueCategories.add(qoute.category.toLowerCase());
-        }
-    });
-//add unique categories to the dropdown
-uniqueCategories.forEach(category =>{
+    // Use 'map' to transform the quotes array into an array of lowercase categories.
+    const allCategories = quotes.map(quote => quote.category ? quote.category.toLowerCase() : '').filter(Boolean);
+    
+    // Get unique categories using a Set
+    const uniqueCategories = [...new Set(allCategories)];
+
+     // Clear existing options except "All Categories"
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+
+    //add unique categories to the dropdown
+    uniqueCategories.forEach(category =>{
     const option = document.createElement ('option');
     option.value=category;
     option.textContent = category.charAt(0).toUpperCase()+ category.slice (1) //capitalise the first letter 
