@@ -12,6 +12,9 @@ const newQuoteTextInput = document.getElementById('newQuoteText');
 const newQuoteCategoryInput = document.getElementById('newQuoteCategory');
 const addQuoteBtn = document.getElementById('addQuoteButton');
 const allQuotesList = document.getElementById('allQuotesList'); // Get the list container for all quotes
+const importFileBtn = document.getElementById('importFile'); 
+const exportBtn = document.getElementById('exportBtn');  
+
 
 /**
  * Displays a random quote from the 'quotes' array.
@@ -116,6 +119,10 @@ function saveQuotes(){
     localStorage.setItem('qoutes',JSON.stringify(quotes)); //qoutes are already an object
 }
 
+//Loads quotes from Local Storage.
+function loadQuotes(){
+    const storedQuotes = localStorage.getItem('quotes');
+}
 //Implementing web storage 
 function importFromJsonFile(event) {
     const fileReader = new FileReader();
@@ -132,12 +139,19 @@ function importFromJsonFile(event) {
   //To export qoutes to a JSON file, download and import file.
   function exporttoJSONFile (){
     const dataString = JSON.stringify(quotes);
+    const blob = new Blob([dataString],{type: 'application/json'}); // Create a blob from the JSON string, blob = a container for raw data
+    //Create a temporary URL for the blob
+    const url = URL.createObjectURL(blob);
+    //Create a temporary anchor 'a' element (download link)
     const downloadLink = document.createElement ('a');
-    downloadLink.download="quotes.json";
+    downloadLink.href=url
+    downloadLink.download="quotes.json"; //suggested name for the downloadable file
     document.body.appendChild (downloadLink);
     downloadLink.click();
-    document.body.removeChild(downloadLink);
+    document.body.removeChild(downloadLink); //remove the link after clicking
   }
+
+  //Event Listeners
   document.getElementById('importFile').addEventListener('change', importFromJsonFile);
   document.getElementById('exportBtn').addEventListener('click', exportToJsonFile);
 
