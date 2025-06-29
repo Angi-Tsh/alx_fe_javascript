@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Quote Generator</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>Dynamic Quote Generator</h1>
@@ -34,6 +35,23 @@
     <button id="exportBtn">Export Quotes</button>
     <button id="importFile">Import File</button>
 
-    <script src="script.js"></script>
+    <div id="allQuotesList">
+    <h2>All Quotes Added</h2>
+    </div>
+
+  <div class="file-io-controls">
+    <h2>File Operations</h2>
+    <input type="file" id="importFile" accept=".json" style="margin-right: 10px;">
+    <label for="importFile" class="button">Import Quotes</label>
+    <button id="exportBtn">Export Quotes</button>
+  </div>
+
+  <div class="controls">
+    <h2>Server Sync</h2>
+    <button id="syncNowBtn">Sync Now</button>
+    <div id="syncStatus"></div>
+  </div>
+
+  <script src="script.js"></script>
   </body>
   </html>
