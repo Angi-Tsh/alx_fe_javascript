@@ -109,3 +109,23 @@ newQuoteBtn.addEventListener('click', showRandomQuote);
 // Link the 'Add Quote' button to the createAddQuoteForm function as specified
 addQuoteBtn.addEventListener('click', createAddQuoteForm);
 
+////////////////////////
+//Save current qoutes array to Local storage
+function saveQuotes(){
+    //the array, as an object, is converted into a a string first before saving.
+    localStorage.setItem('qoutes',JSON.stringify(quotes)); //qoutes are already an object
+}
+
+//Implementing web storage 
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+      const importedQuotes = JSON.parse(event.target.result);
+      quotes.push(...importedQuotes);
+      saveQuotes(); //save updated qoutes to local storage
+      showRandomQuote(),
+      alert('Quotes imported successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+  }
+
