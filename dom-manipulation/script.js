@@ -278,14 +278,13 @@ async function pushQuotesToServer(newLocalQuotes) {
 }
 
 /**
- * Main synchronization logic. Fetches from server, resolves conflicts, and pushes local changes.
+ * Core synchronization logic: Fetches from server, resolves conflicts, and updates local data.
  * Conflict Resolution: Server data takes precedence.
- * Notification: Updates sync status UI.
+ * This is the function explicitly requested.
  */
-async function syncData() {
-    updateSyncStatus('Starting sync...', 'info');
 
-    const serverQuotes = await fetchQuotesFromServer();
+async function syncQuotes (){
+     const serverQuotes = await fetchQuotesFromServer();
     let localQuotesToPush = [];
     let conflictsResolved = 0;
     let newQuotesFromServer = 0;
@@ -305,7 +304,7 @@ async function syncData() {
                 serverQuoteMap.delete(localQuote.id);
             }
         } else {
-            if (localQuote.id === null || typeof localQuote.id === 'undefined') { // Check specifically for null or undefined to mark new
+            if (localQuote.id === null || typeof localQuote.id === 'undefined') {
                 localQuotesToPush.push(localQuote);
             }
             mergedQuotes.push(localQuote);
@@ -318,22 +317,44 @@ async function syncData() {
     });
 
     quotes = mergedQuotes;
-    saveQuotes(); // Save the merged data to local storage
+    saveQuotes();
 
     await pushQuotesToServer(localQuotesToPush);
 
-    populateCategories();
-    showRandomQuote();
-    filterQuotes();
-
-    let syncMessage = 'Sync complete.';
-    if (conflictsResolved > 0) syncMessage += ` ${conflictsResolved} conflicts resolved (server precedence).`;
-    if (newQuotesFromServer > 0) syncMessage += ` ${newQuotesFromServer} new quotes from server.`;
-    if (localQuotesToPush.length > 0) syncMessage += ` ${localQuotesToPush.length} quotes pushed to server.`;
-
-    updateSyncStatus(syncMessage, 'success');
+    // This function now returns the results, letting the orchestrator handle UI updates
+    return { conflictsResolved, newQuotesFromServer, quotesPushed: localQuotesToPush.length };
 }
 
+/**
+ * Main synchronization logic. Fetches from server, resolves conflicts, and pushes local changes.
+ * Conflict Resolution: Server data takes precedence.
+ * Notification: Updates sync status UI.
+ */
+//This function will be called by event listeners and the periodic timer.
+ 
+// This function now calls syncQuotes and handles UI after it returns
+async function syncData() {
+    updateSyncStatus('Starting sync...', 'info');
+    try {
+        // Calling the newly defined syncQuotes function
+        const syncResults = await syncQuotes();
+
+        // UI updates moved here from the old syncData
+        populateCategories();
+        showRandomQuote();
+        filterQuotes();
+
+        let syncMessage = 'Sync complete.';
+        if (syncResults.conflictsResolved > 0) syncMessage += ` ${syncResults.conflictsResolved} conflicts resolved (server precedence).`;
+        if (syncResults.newQuotesFromServer > 0) syncMessage += ` ${syncResults.newQuotesFromServer} new quotes from server.`;
+        if (syncResults.quotesPushed > 0) syncMessage += ` ${syncResults.quotesPushed} quotes pushed to server.`;
+
+        updateSyncStatus(syncMessage, 'success');
+    } catch (error) {
+        console.error("Error during full sync process:", error);
+        updateSyncStatus(`Full sync failed: ${error.message}`, 'error');
+    }
+}
 
 //## File Operations
 
