@@ -129,3 +129,15 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
   }
 
+  //To export qoutes to a JSON file, download and import file.
+  function exporttoJSONFile (){
+    const dataString = JSON.stringify(quotes);
+    const downloadLink = document.createElement ('a');
+    downloadLink.download="quotes.json";
+    document.body.appendChild (downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+  document.getElementById('importFile').addEventListener('change', importFromJsonFile);
+  document.getElementById('exportBtn').addEventListener('click', exportToJsonFile);
+
